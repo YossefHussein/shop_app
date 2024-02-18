@@ -30,7 +30,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
             SizedBox(
               height: 20,
             ),
-            // email field
+            // email form field
             formFieldWidget(
               controller: emailController,
               labelText: 'email',
@@ -47,14 +47,15 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
             SizedBox(
               height: 20,
             ),
+            // password form field
             formFieldWidget(
-              controller: emailController,
+              controller: passwordController,
               labelText: 'email',
               type: TextInputType.emailAddress,
-              suffixIcon: Icon(Icons.email),
+              suffixIcon: Icon(Icons.visibility_off),
               validate: (String? value) {
                 if (value!.isEmpty) {
-                  return 'Please enter email';
+                  return 'Please enter password';
                 } else {
                   return '';
                 }
