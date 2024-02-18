@@ -39,7 +39,7 @@ Widget formFieldWidget({
       hintText: hintText,
       helperText: helperText,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(0),
       ),
     ),
     validator: validate,
