@@ -5,15 +5,18 @@ import 'package:lottie/lottie.dart';
 import 'package:shop_app/modules/shop_login_screen.dart';
 import 'package:shop_app/shared/colors.dart';
 import 'package:shop_app/shared/components/widget.dart';
+import 'package:shop_app/shared/network/local/cash_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-// this model to help me to adding the image and title 
+// this model to help me to adding the image and title
 // and body for onboarding [onBoardingItem] method
 class BoardingModel {
   // this title of on boarding
   final String title;
+
   // this image of on boarding
   final String lottieImage;
+
   // this body of on boarding
   final String body;
 
@@ -66,26 +69,28 @@ class Controlling extends State<OnBoarding> {
     ),
   ];
 
+  void submit() {
+    CacheHelper.saveData(key: 'onBoarding', value: true).then((value) {
+      if (value == true) {
+        // if true go to [ShopLoginScreen]
+        navigateAndFinish(context, LoginScreen());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          // skip button if user not want to show onboarding
           TextButton(
             style: ButtonStyle(
-              textStyle: MaterialStateProperty.all(
-                TextStyle(
-                  color: Colors.black
-                ),
+              textStyle: WidgetStateProperty.all(
+                TextStyle(color: Colors.black),
               ),
             ),
-            onPressed: () {
-              // go and replacement
-              navigateAndFinish(
-                context,
-                ShopLoginScreen(),
-              );
-            },
+            onPressed: submit,
             child: Text('SKIP'),
           )
         ],
@@ -94,8 +99,8 @@ class Controlling extends State<OnBoarding> {
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
+            // this for see the animation of the onboarding
             Expanded(
-              // PageView is
               child: PageView.builder(
                 controller: boardController,
                 itemBuilder: (context, index) => onBoardingItem(
@@ -141,8 +146,7 @@ class Controlling extends State<OnBoarding> {
                 FloatingActionButton(
                   onPressed: () {
                     if (isLast) {
-                      // if true go to [ShopLoginScreen]
-                      navigateAndFinish(context, ShopLoginScreen());
+                      submit();
                     } else {
                       // [boardController] next page this method to move next page inside page view
                       boardController.nextPage(
