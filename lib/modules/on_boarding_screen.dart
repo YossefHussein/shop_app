@@ -2,24 +2,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shop_app/modules/shop_login_screen.dart';
+import 'package:shop_app/modules/login_screen.dart';
 import 'package:shop_app/shared/colors.dart';
 import 'package:shop_app/shared/components/widget.dart';
 import 'package:shop_app/shared/network/local/cash_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-// this model to help me to adding the image and title
-// and body for onboarding [onBoardingItem] method
+// This model is used to help add the image, title, and body for the onboarding screens
 class BoardingModel {
-  // this title of on boarding
+  // This is the title of the onboarding screen
   final String title;
-
-  // this image of on boarding
+  // This is the image of the onboarding screen
   final String lottieImage;
-
-  // this body of on boarding
+  // This is the body of the onboarding screen
   final String body;
 
+  // Constructor for BoardingModel with required parameters
   BoardingModel({
     required this.title,
     required this.lottieImage,
@@ -27,20 +25,25 @@ class BoardingModel {
   });
 }
 
-class OnBoarding extends StatefulWidget {
-  const OnBoarding({super.key});
+// Defining a stateful widget named OnBoardingScreen
+class OnBoardingScreen extends StatefulWidget {
+  // Defining a constant constructor with a key
+  const OnBoardingScreen({super.key});
 
+  // Overriding the createState method to create the state for the widget
   @override
-  State<OnBoarding> createState() => Controlling();
+  State<OnBoardingScreen> createState() => Controlling();
 }
 
-class Controlling extends State<OnBoarding> {
-  // this page controller to Controlling on page view
+// State class for the OnBoardingScreen widget
+class Controlling extends State<OnBoardingScreen> {
+  // PageController to control the page view
   var boardController = PageController();
 
-  // when user move to last
+  // Boolean variable to check if the user is on the last page
   bool isLast = false;
 
+  // List of boarding items for the onboarding screens
   List<BoardingModel> boarding = [
     BoardingModel(
       title: 'Feature 1',
@@ -69,70 +72,78 @@ class Controlling extends State<OnBoarding> {
     ),
   ];
 
+  // Method to navigate to the login screen if the user completes the onboarding
   void submit() {
     CacheHelper.saveData(key: 'onBoarding', value: true).then((value) {
       if (value == true) {
-        // if true go to [ShopLoginScreen]
+        // If true, navigate to the LoginScreen
         navigateAndFinish(context, LoginScreen());
       }
     });
   }
 
+  // Overriding the build method to build the widget tree
   @override
   Widget build(BuildContext context) {
+    // Returning a Scaffold widget to define the structure of the screen
     return Scaffold(
+      // Defining the AppBar of the Scaffold
       appBar: AppBar(
+        // Defining the actions of the AppBar
         actions: [
-          // skip button if user not want to show onboarding
+          // Skip button if the user does not want to see the onboarding screens
           TextButton(
             style: ButtonStyle(
               textStyle: WidgetStateProperty.all(
                 TextStyle(color: Colors.black),
               ),
             ),
+            // Defining the onPressed callback for the TextButton
             onPressed: submit,
+            // Setting the text of the TextButton
             child: Text('SKIP'),
           )
         ],
       ),
+      // Defining the body of the Scaffold
       body: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
-            // this for see the animation of the onboarding
+            // Expanded widget to see the animation of the onboarding screens
             Expanded(
               child: PageView.builder(
                 controller: boardController,
+                // ItemBuilder to build each item in the PageView
                 itemBuilder: (context, index) => onBoardingItem(
                   model: boarding[index],
                 ),
-                // this method when change doing this
+                // Method called when the page changes
                 onPageChanged: (index) {
                   if (index == boarding.length - 1) {
-                    // if true go to [ShopLoginScreen]
-                    // because when to be true and user click of [FloatingActionButton] Widget active code inside [FloatingActionButton]
-                    // and going to ShopLoginScreen
+                    // If the user is on the last page
                     setState(() {
                       isLast = true;
                     });
                   } else {
-                    // if false mean go to next page
+                    // If the user is not on the last page
                     setState(() {
                       isLast = false;
                     });
                   }
                 },
-                // adding the length of the [boarding] list
+                // Setting the item count to the length of the boarding list
                 itemCount: boarding.length,
               ),
             ),
             Row(
               children: [
-                // this to adding style to indicator of onboarding screen
+                // Adding style to the indicator of the onboarding screen
                 SmoothPageIndicator(
                   controller: boardController,
+                  // Setting the count to the length of the boarding list
                   count: boarding.length,
-                  // [ExpandingDotsEffect] is styling for [smooth page indicator]
+                  // Using ExpandingDotsEffect to style the SmoothPageIndicator
                   effect: ExpandingDotsEffect(
                     dotColor: Colors.grey,
                     activeDotColor: defaultColor,
@@ -143,20 +154,23 @@ class Controlling extends State<OnBoarding> {
                   ),
                 ),
                 Spacer(),
+                // FloatingActionButton for navigation
                 FloatingActionButton(
                   onPressed: () {
                     if (isLast) {
+                      // If the user is on the last page, submit the data
                       submit();
                     } else {
-                      // [boardController] next page this method to move next page inside page view
+                      // If the user is not on the last page, move to the next page
                       boardController.nextPage(
-                        // duration is 850 milliseconds
+                        // Duration for the page transition
                         duration: Duration(milliseconds: 850),
-                        // [fastLinearToSlowEaseIn] is style of movement
+                        // Curve for the page transition
                         curve: Curves.fastLinearToSlowEaseIn,
                       );
                     }
                   },
+                  // Setting the icon for the FloatingActionButton
                   child: Icon(Icons.arrow_forward_ios_outlined),
                 )
               ],
@@ -167,20 +181,21 @@ class Controlling extends State<OnBoarding> {
     );
   }
 
+  // Widget to build each onboarding item
   Widget onBoardingItem({
-    // this to passing when calling this method
+    // Required parameter to pass the model
     required BoardingModel model,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // this to passing for lottie
+        // Passing the lottie animation
         Lottie.asset(model.lottieImage),
         Spacer(
           flex: 1,
         ),
         Text(
-          // this to passing for title
+          // Passing the title
           model.title,
           style: TextStyle(
             fontSize: 30,
@@ -191,7 +206,7 @@ class Controlling extends State<OnBoarding> {
           height: 10,
         ),
         Text(
-          // this to passing for body
+          // Passing the body
           model.body,
           style: TextStyle(
             fontSize: 18,

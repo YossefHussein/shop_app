@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:shop_app/shared/colors.dart';
 
 var lightTheme = ThemeData(
+  useMaterial3: false,
   fontFamily: 'Cairo',
   primarySwatch: defaultColor,
   scaffoldBackgroundColor: Colors.white,
@@ -45,11 +46,13 @@ var lightTheme = ThemeData(
   iconTheme: const IconThemeData(
     color: Colors.black,
   ),
+  buttonTheme: ButtonThemeData(buttonColor: defaultColor),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: defaultColor, foregroundColor: Colors.white),
 );
 
 var darkTheme = ThemeData(
+  useMaterial3: false,
   fontFamily: 'Cairo',
   primarySwatch: defaultColor,
   scaffoldBackgroundColor: pColor,
@@ -75,6 +78,7 @@ var darkTheme = ThemeData(
     titleTextStyle: const TextStyle(
       color: Colors.white,
       fontSize: 20.0,
+      fontFamily: 'ProtestRiot',
       fontWeight: FontWeight.bold,
     ),
     iconTheme: const IconThemeData(

@@ -1,6 +1,21 @@
-part of 'shop_login_cubit.dart';
+import 'package:shop_app/models/model.dart';
 
-@immutable
-sealed class ShopLoginState {}
+abstract class ShopLoginStates {}
 
-final class ShopLoginInitial extends ShopLoginState {}
+class ShopLoginInitial extends ShopLoginStates {}
+
+class ShopLoginLoadingState extends ShopLoginStates {}
+
+class ShopLoginSuccessState extends ShopLoginStates {
+  final ShopLoginModel loginModel;
+  ShopLoginSuccessState(this.loginModel);
+}
+
+class ShopLoginErrorState extends ShopLoginStates {
+  final String? error;
+  ShopLoginErrorState(this.error){
+    print(error);
+  }
+}
+
+class ShopChangePasswordVisibility extends ShopLoginStates {}

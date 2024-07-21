@@ -1,6 +1,18 @@
-part of 'shop_cubit.dart';
+class ShopStates {}
 
-@immutable
-sealed class ShopState {}
+class ShopInitial extends ShopStates {}
 
-final class ShopInitial extends ShopState {}
+class ShopChangeBottomNavState extends ShopStates {}
+
+class ShopLodgingHomeDataState extends ShopStates {}
+
+class ShopSuccessHomeDataState extends ShopStates {}
+
+class ShopErrorHomeDataState extends ShopStates {}
+
+
+class ShopLodgingCategoriesState extends ShopStates {}
+
+class ShopSuccessCategoriesState extends ShopStates {}
+
+class ShopErrorCategoriesState extends ShopStates {}
