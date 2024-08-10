@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/modules/search_screen.dart';
 import 'package:shop_app/shared/components/widget.dart';
 import 'package:shop_app/shared/cubit/shop_cubit.dart';
-import 'package:shop_app/shared/cubit/shop_state.dart';
+import 'package:shop_app/shared/cubit/shop_states.dart';
 
 // Defining a stateless widget named HomeLayout
 class HomeLayout extends StatelessWidget {
@@ -17,7 +17,7 @@ class HomeLayout extends StatelessWidget {
       listener: (context, state) {},
       // Defining the builder function to build the UI
       builder: (context, state) {
-        // Getting the ShopCubit instance from the context
+        // get the information
         var cubit = ShopCubit.get(context);
         // Returning a Scaffold widget to define the structure of the screen
         return Scaffold(
@@ -27,7 +27,7 @@ class HomeLayout extends StatelessWidget {
             title: Text(
               'Salla',
               // Applying a text style from the current theme with a custom color
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Colors.black,
                   ),
             ),
@@ -38,7 +38,10 @@ class HomeLayout extends StatelessWidget {
                   // Defining the onPressed callback for the IconButton
                   onPressed: () {
                     // Navigating to the SearchScreen when the button is pressed
-                    navigateTo(context, SearchScreen());
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchScreen()));
                   },
                   // Setting the icon of the IconButton
                   icon: Icon(Icons.search_outlined))
@@ -65,19 +68,19 @@ class HomeLayout extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.apps_outlined,
+                  Icons.apps,
                 ),
                 label: 'category',
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.favorite_outline,
+                  Icons.favorite,
                 ),
                 label: 'favorite',
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.settings_outlined,
+                  Icons.settings,
                 ),
                 label: 'settings',
               ),

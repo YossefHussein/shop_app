@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 // white
-var pColor = HexColor('#333739');
+var sColor = HexColor('#ffffff');
 
-var defaultColor = Colors.deepOrange;
+var pColor = Colors.blue;
+
+var pDiscountColor = Colors.red;
+

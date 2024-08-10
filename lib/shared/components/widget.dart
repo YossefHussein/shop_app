@@ -1,34 +1,20 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shop_app/shared/colors.dart';
-
-void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => widget),
-      (route) => false,
-    );
-
-void navigateTo(context, widget) => Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => widget,
-      ),
-    );
+import 'package:shop_app/shared/styles/colors.dart';
 
 // default text form in app
 Widget formFieldWidget({
-  final TextEditingController? controller,
-  final String? labelText,
+  required TextEditingController? controller,
+  required final String? labelText,
   final String? hintText,
   final String? helperText,
   final bool isPassword = false,
-  final FormFieldValidator<String>? validate,
+  required final FormFieldValidator<String>? validate,
   final ValueChanged<String>? onSubmits,
   final ValueChanged<String>? onChanged,
-  final TextInputType? type,
-  final Widget? prefixIcon,
+ required final TextInputType? type,
+  required final Widget? prefixIcon,
   final Widget? suffixIcon,
   final VoidCallback? suffixPressed,
 }) {
@@ -50,7 +36,7 @@ Widget formFieldWidget({
       hintText: hintText,
       helperText: helperText,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(0),
+        borderRadius: BorderRadius.circular(10),
       ),
     ),
     validator: validate,
@@ -59,18 +45,19 @@ Widget formFieldWidget({
 
 Widget defaultButton({
   double width = double.infinity,
-  Color backGroundColor = Colors.deepOrange,
   bool isUpperCase = true,
   double radius = 0.0,
-  required Function onTap,
+  required Function() onTap,
   required String text,
 }) =>
     Container(
       width: width,
       decoration: BoxDecoration(
-          color: backGroundColor, borderRadius: BorderRadius.circular(radius)),
+          color: pColor, borderRadius: BorderRadius.circular(radius)),
       child: MaterialButton(
-        onPressed: () => onTap(),
+        onPressed: () {
+          onTap();
+        },
         child: Text(
           isUpperCase ? text.toUpperCase() : text,
           style: TextStyle(
@@ -109,12 +96,22 @@ Color chooseToastColor(ToastStates state) {
   return color;
 }
 
-
 Widget myDivider() => Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 10),
-  child: Container(
-    width: double.infinity,
-    color: Colors.grey[300],
-    height: 1,
-  ),
-);
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+        width: double.infinity,
+        color: Colors.grey[300],
+        height: 1,
+      ),
+    );
+
+void navigateTo(context,Widget){
+  Navigator.push(context,
+      MaterialPageRoute(builder: (context)=> Widget
+      ));
+}
+
+void navigateAndFinish(context,widget)=>
+  Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context)=>widget),
+          (route) => false);

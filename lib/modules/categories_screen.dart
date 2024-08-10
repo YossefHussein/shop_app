@@ -1,8 +1,11 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/models/categories_model.dart';
 import 'package:shop_app/shared/cubit/shop_cubit.dart';
-import 'package:shop_app/shared/cubit/shop_state.dart';
+import 'package:shop_app/shared/cubit/shop_states.dart';
+
+import '../shared/components/widget.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
@@ -12,21 +15,30 @@ class CategoriesScreen extends StatelessWidget {
     return BlocConsumer<ShopCubit, ShopStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return ListView.separated(
-          physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) => BuildCategoryItem(ShopCubit.get(context).categoriesModel!.data.data[index]),
-            itemCount: ShopCubit.get(context).categoriesModel!.data.data.length,
-            separatorBuilder: (BuildContext context, int index) => myDivider());
+        return ConditionalBuilder(
+          condition: ShopCubit.get(context).categoriesModel != null,
+          builder: (context) => ListView.separated(
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) => buildCategoryItem(
+                  ShopCubit.get(context).categoriesModel!.data.data[index]),
+              itemCount:
+                  ShopCubit.get(context).categoriesModel!.data.data.length,
+              separatorBuilder: (BuildContext context, int index) =>
+                  myDivider()),
+          fallback: (context) =>
+              Center(child: const CircularProgressIndicator()),
+        );
       },
     );
   }
 
-  Widget BuildCategoryItem(DataModel model) => Padding(
+  // This function to build
+  Widget buildCategoryItem(DataModel model) => Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Image(
-              image: NetworkImage(model.image),
+            Image.network(
+              model.image,
               height: 80,
               width: 80,
             ),
@@ -42,11 +54,3 @@ class CategoriesScreen extends StatelessWidget {
       );
 }
 
-Widget myDivider() => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Container(
-        width: double.infinity,
-        color: Colors.grey[300],
-        height: 1,
-      ),
-    );

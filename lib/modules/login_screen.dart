@@ -5,8 +5,11 @@ import 'package:shop_app/layout/home_layout.dart';
 import 'package:shop_app/modules/register_screen.dart';
 import 'package:shop_app/shared/components/widget.dart';
 import 'package:shop_app/shared/cubit/login/shop_login_cubit.dart';
-import 'package:shop_app/shared/cubit/login/shop_login_state.dart';
 import 'package:shop_app/shared/network/local/cash_helper.dart';
+
+import '../shared/components/constant.dart';
+import '../shared/cubit/login/shop_login_states.dart';
+import '../shared/cubit/logup/shop_register_cubit.dart';
 
 // Defining the StatefulWidget for the LoginScreen
 class LoginScreen extends StatefulWidget {
@@ -42,12 +45,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: 'token',
                 value: state.loginModel.data!.token,
               ).then((value) {
+                token = state.loginModel.data!.token;
                 // Showing success message
                 showToast(
                   message: '${state.loginModel.message}',
                   state: ToastStates.success,
                 );
-                // Navigating to HomeLayout after successful login
                 navigateAndFinish(context, const HomeLayout());
               });
             } else {
@@ -83,19 +86,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'Login',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .displayLarge
+                                    .headlineLarge
                                     ?.copyWith(
-                                  color: Colors.black,
-                                ),
+                                      color: Colors.black,
+                                    ),
                               ),
                               Text(
                                 'Login now to browse our hot offers',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headlineSmall
+                                    .bodyMedium
                                     ?.copyWith(
-                                  color: Colors.grey,
-                                ),
+                                      color: Colors.grey,
+                                    ),
                               ),
                             ],
                           ),
@@ -106,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Email form field
                         formFieldWidget(
                           controller: emailController,
-                          labelText: 'email',
+                          labelText: 'Email',
                           type: TextInputType.emailAddress,
                           // Validation function for email field
                           validate: (String? value) {
@@ -122,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Password form field
                         formFieldWidget(
                           controller: passwordController,
-                          labelText: 'password',
+                          labelText: 'Password',
                           type: TextInputType.visiblePassword,
                           suffixPressed: () {
                             // Toggling password visibility
@@ -131,8 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           // Passing current password visibility state
                           isPassword: ShopLoginCubit.get(context).isPassword,
-                          suffixIcon:
-                          Icon(ShopLoginCubit.get(context).suffix),
+                          suffixIcon: Icon(ShopLoginCubit.get(context).suffix),
                           prefixIcon: const Icon(Icons.lock_outline),
                           // Validation function for password field
                           validate: (String? value) {
@@ -158,11 +160,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               }
                             },
-                            text: 'Login',
+                            text: 'LogIn',
                           ),
                           // Showing loading indicator while logging in
                           fallback: (context) =>
-                          const Center(child: CircularProgressIndicator()),
+                              const Center(child: CircularProgressIndicator()),
                         ),
                         const SizedBox(
                           height: 15,
@@ -173,13 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const Text('don\'t have an account?'),
                             TextButton(
-                              onPressed: () {
-                                // Navigating to RegisterScreen
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => RegisterScreen()));
-                              },
-                              child: const Text('Register'),
-                            ),
+                                onPressed: () {
+                                  navigateTo(context, RegisterScreen());
+                                },
+                                child: const Text('Register'))
                           ],
                         ),
                       ],

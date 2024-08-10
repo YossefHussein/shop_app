@@ -1,51 +1,52 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/shared/components/constant.dart';
 import 'package:shop_app/shared/network/remote/dio_helper.dart';
 import '../../../models/login_model.dart';
 import '../../network/end_point.dart';
-import 'shop_login_states.dart';
+import '../login/shop_login_cubit.dart';
+import 'shop_register_stats.dart';
 
-// Defining the ShopLoginCubit class that extends Cubit with ShopLoginStates
-class ShopLoginCubit extends Cubit<ShopLoginStates> {
-  // Constructor to initialize the ShopLoginCubit with an initial state
-  ShopLoginCubit() : super(ShopLoginInitial());
-
-  // Static method to get the instance of ShopLoginCubit from the context
-  static ShopLoginCubit get(context) => BlocProvider.of(context);
+class ShopRegisterCubit extends Cubit<ShopRegisterStates> {
+  ShopRegisterCubit() : super(ShopRegisterInitial());
+   static ShopRegisterCubit get(context) => BlocProvider.of(context);
 
   // This model class for storing login response data
   ShopLoginModel? loginModel;
 
   // Method to handle user login
-  void userLogin({
-    // Required email parameter
+  void userRegister({
+    required String name,
     required String email,
-    // Required password parameter
     required String password,
+    required String phone,
   }) {
     // Emitting state to notify listeners that login is in progress
-    emit(ShopLoginLoadingState());
+    emit(ShopRegisterLoadingState());
 
     // Making a POST request to the login endpoint
     DioHelper.postData(
       token: token,
-      url: login,
+      
+      url: register,
       data: {
         // Sending email and password in the request body
+        'name': name,
         'email': email,
         'password': password,
+        'phone': phone,
       },
     ).then((value) {
       // Parsing the response and storing it in loginModel
       loginModel = ShopLoginModel.formJson(value.data);
       // Emitting state to notify listeners that login was successful
-      emit(ShopLoginSuccessState(loginModel!));
+      emit(ShopRegisterSuccessState(loginModel!));
     }).catchError((error) {
       // Printing the error message
       print(error.toString());
       // Emitting state to notify listeners that an error occurred during login
-      emit(ShopLoginErrorState(error.toString()));
+      emit(ShopRegisterErrorState(error.toString()));
     });
   }
 
@@ -67,3 +68,4 @@ class ShopLoginCubit extends Cubit<ShopLoginStates> {
     emit(ShopChangePasswordVisibility());
   }
 }
+

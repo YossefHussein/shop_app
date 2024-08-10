@@ -1,23 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../modules/login_screen.dart';
-import 'components/widget.dart';
-import 'network/local/cash_helper.dart';
+import '../../modules/login_screen.dart';
+import 'widget.dart';
+import '../network/local/cash_helper.dart';
 
-Widget logOut(context) => TextButton(
-      onPressed: () {
-        CacheHelper.removeData(key: 'token').then((value) {
-          if (value) {
-            value = true;
-            navigateAndFinish(context, const LoginScreen());
-          }
-        });
-      },
-      child: const Text('log out'),
-    );
+logOut(context) {
+  CacheHelper.removeData(key: 'token').then((value) {
+    if (value) {
+      value = true;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    }
+  });
+}
 
-String? token = '';
+// this when call this variable save the token in inside
+// to send when call the api for auth of api
+String? token;
 
 // function to print a long text in chunks of up to 800 characters each
 void printFullText(String? text) {

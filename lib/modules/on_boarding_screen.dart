@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shop_app/modules/login_screen.dart';
-import 'package:shop_app/shared/colors.dart';
+import 'package:shop_app/shared/styles/colors.dart';
 import 'package:shop_app/shared/components/widget.dart';
 import 'package:shop_app/shared/network/local/cash_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -32,11 +32,11 @@ class OnBoardingScreen extends StatefulWidget {
 
   // Overriding the createState method to create the state for the widget
   @override
-  State<OnBoardingScreen> createState() => Controlling();
+  State<OnBoardingScreen> createState() => OnBoardingScreenState();
 }
 
 // State class for the OnBoardingScreen widget
-class Controlling extends State<OnBoardingScreen> {
+class OnBoardingScreenState extends State<OnBoardingScreen> {
   // PageController to control the page view
   var boardController = PageController();
 
@@ -77,7 +77,7 @@ class Controlling extends State<OnBoardingScreen> {
     CacheHelper.saveData(key: 'onBoarding', value: true).then((value) {
       if (value == true) {
         // If true, navigate to the LoginScreen
-        navigateAndFinish(context, LoginScreen());
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
       }
     });
   }
@@ -146,7 +146,7 @@ class Controlling extends State<OnBoardingScreen> {
                   // Using ExpandingDotsEffect to style the SmoothPageIndicator
                   effect: ExpandingDotsEffect(
                     dotColor: Colors.grey,
-                    activeDotColor: defaultColor,
+                    activeDotColor: pColor,
                     dotHeight: 10,
                     expansionFactor: 4,
                     dotWidth: 8,

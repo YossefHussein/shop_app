@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/models/categories_model.dart';
 import 'package:shop_app/models/home_model.dart';
 import 'package:shop_app/shared/cubit/shop_cubit.dart';
-import 'package:shop_app/shared/cubit/shop_state.dart';
-import '../shared/colors.dart';
+import 'package:shop_app/shared/cubit/shop_states.dart';
+import '../shared/components/widget.dart';
+import '../shared/styles/colors.dart';
 
 // Defining a stateless widget for the ProductsScreen
 class ProductsScreen extends StatelessWidget {
@@ -16,14 +17,24 @@ class ProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Using BlocConsumer to listen and build UI based on ShopCubit state
     return BlocConsumer<ShopCubit, ShopStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is ShopSuccessChangeFavoriteState) {
+          if (state.model.status == false) {
+            showToast(message: state.model.message, state: ToastStates.error);
+          }
+          if (state.model.status == true) {
+            showToast(message: state.model.message, state: ToastStates.success);
+          }
+        }
+      },
       builder: (context, state) {
         // Using ConditionalBuilder to check if homeModel is not null
         return ConditionalBuilder(
-          condition: ShopCubit.get(context).homeModel != null && ShopCubit.get(context).categoriesModel != null,
+          condition: ShopCubit.get(context).homeModel != null,
           builder: (context) {
             // If homeModel is not null, build the products UI
-            return productsBuilder(ShopCubit.get(context).homeModel! , ShopCubit.get(context).categoriesModel!);
+            return productsBuilder(ShopCubit.get(context).homeModel!,
+                ShopCubit.get(context).categoriesModel!, context);
           },
           fallback: (context) {
             // If homeModel is null, show a loading indicator
@@ -35,7 +46,11 @@ class ProductsScreen extends StatelessWidget {
   }
 
   // Function to build the products UI
-  Widget productsBuilder(HomeModel homeModel , CategoriesModel categoriesModel) {
+  Widget productsBuilder(
+    HomeModel homeModel,
+    CategoriesModel categoriesModel,
+    context,
+  ) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -44,10 +59,8 @@ class ProductsScreen extends StatelessWidget {
           // Carousel Slider for displaying banners
           CarouselSlider(
             items: homeModel.data.banners.map((e) {
-              return Image(
-                image: NetworkImage(
-                  '${e.image}',
-                ),
+              return Image.network(
+                e.image,
                 width: double.infinity,
                 fit: BoxFit.cover,
               );
@@ -57,11 +70,16 @@ class ProductsScreen extends StatelessWidget {
               initialPage: 0,
               enableInfiniteScroll: true,
               reverse: false,
+              // when open app carousel slider is scrolling without user
+              // click on the slider
               autoPlay: true,
               viewportFraction: 1.0,
+              // change the image after 3
               autoPlayInterval: const Duration(seconds: 3),
               autoPlayAnimationDuration: const Duration(seconds: 1),
+              // this is styling of movement
               autoPlayCurve: Curves.fastOutSlowIn,
+              // scroll direction is horizontal
               scrollDirection: Axis.horizontal,
             ),
           ),
@@ -85,9 +103,13 @@ class ProductsScreen extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) => buildCategoryItem(categoriesModel.data.data[index]),
+                    itemBuilder: (context, index) =>
+                        buildCategoryItem(categoriesModel.data.data[index]),
                     itemCount: categoriesModel.data.data.length,
-                    separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 5,),
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const SizedBox(
+                      width: 5,
+                    ),
                   ),
                 ),
                 const Text(
@@ -115,8 +137,9 @@ class ProductsScreen extends StatelessWidget {
               childAspectRatio: 1 / 1.5,
               // Generating product grid items
               children: List.generate(
-                homeModel!.data.products.length,
-                (index) => buildGridProduct(homeModel.data.products[index]),
+                homeModel.data.products.length,
+                (index) =>
+                    buildGridProduct(homeModel.data.products[index], context),
               ),
             ),
           )
@@ -125,35 +148,35 @@ class ProductsScreen extends StatelessWidget {
     );
   }
 
-  // This to build category of the product
+  // This to build category of the product item
   Widget buildCategoryItem(DataModel model) {
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: [
-         Image(
-          image: NetworkImage(
-              model.image),
+        Image.network(
+          model.image,
           height: 150,
           width: 100,
           fit: BoxFit.cover,
+         
         ),
         Container(
           color: Colors.black.withOpacity(0.6),
           width: 100,
-          child:  Text(
+          child: Text(
             model.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ],
     );
   }
 
-  // Function to build individual grid product
-  Widget buildGridProduct(ProductModel model) => Container(
+  // This for function to build the grid item
+  Widget buildGridProduct(ProductModel model, context) => Container(
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,19 +185,16 @@ class ProductsScreen extends StatelessWidget {
             Expanded(
               child: Stack(
                 children: [
-                  // Product image
-                  Image(
-                    image: NetworkImage(
-                      '${model.image}',
-                    ),
+                  Image.network(
+                    model.image,
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.contain,
+                    
                   ),
                   // Showing discount label if product has a discount
                   if (model.discount != 0)
                     Container(
-                      color: Colors.red,
+                      color: pDiscountColor,
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: const Text(
                         'DISCOUNT',
@@ -187,7 +207,7 @@ class ProductsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // Padding for product details
+            // product details
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -197,21 +217,22 @@ class ProductsScreen extends StatelessWidget {
                     model.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, height: 1.1),
+                    style: const TextStyle(fontSize: 15, height: 1.1),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: [
                       // Product price
                       Text(
                         '${model.price.round()}',
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 20,
                           height: 1.1,
-                          color: defaultColor,
+                          color: pColor,
                         ),
                       ),
                       const SizedBox(
@@ -229,10 +250,21 @@ class ProductsScreen extends StatelessWidget {
                       const Spacer(),
                       // Favorite button
                       IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: const Icon(Icons.favorite_outline),
-                      ),
+                        onPressed: () {
+                          ShopCubit.get(context).changeFavorites(model.id);
+                        },
+                        icon: CircleAvatar(
+                            backgroundColor: ShopCubit.get(context)
+                                    .favoritesProduct[model.id]!
+                                ? pColor
+                                : Colors.grey,
+                            radius: 15,
+                            child: const Icon(
+                              Icons.favorite_border,
+                              color: Colors.white,
+                              size: 14,
+                            )),
+                      )
                     ],
                   )
                 ],
